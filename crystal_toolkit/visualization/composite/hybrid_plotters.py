@@ -1,3 +1,4 @@
+from pyclbr import Class
 from typing import Optional
 from numpy import ndarray
 from crystal_toolkit.detector.detector import Detector
@@ -6,13 +7,21 @@ from crystal_toolkit.visualization.composite.composite_base import CompositePlot
 from crystal_toolkit.visualization.plot_2d.bz2d import BrillouinZone2DPlotter
 from crystal_toolkit.visualization.plot_2d.detector2d import Detector2DPlotter
 from crystal_toolkit.visualization.plot_2d.lattice_2d import Lattice2DPlotter
+from crystal_toolkit.visualization.plot_2d.magnetic_points2d import (
+    MagneticPoints2DPlotter,
+)
 from crystal_toolkit.visualization.plot_2d.plotter_2d_base import BasePlotter2D
 from crystal_toolkit.visualization.plot_3d.bz3d import BrillouinZone3DPlotter
 from crystal_toolkit.visualization.plot_3d.detector3d import Detector3DPlotter
 from crystal_toolkit.visualization.plot_3d.lattice3d import Lattice3DPlotter
+from crystal_toolkit.visualization.plot_3d.magnetic_points3d import (
+    MagneticPoints3DPlotter,
+)
 
 
 class KSpace3D(CompositePlotter):
+    title = "3D K space"
+
     def __init__(self, lattice: Lattice, detector: Optional[Detector] = None):
         super().__init__()
         self._lattice = lattice
@@ -37,6 +46,14 @@ class KSpace3D(CompositePlotter):
             )
         )
 
+        # 注册磁峰
+        if is_plot_magnetic_peaks:
+            self.add_figure(
+                MagneticPoints3DPlotter(
+                    self._lattice.magn_k_points, self._lattice.magn_label_list
+                ).plot()
+            )
+
         # 注册BZ
         self.add_figure(
             BrillouinZone3DPlotter(
@@ -56,10 +73,14 @@ class KSpace3D(CompositePlotter):
         # 组装
         self.build_plot(is_plot_detectors)
 
+        # 统一layout
+        self._apply_unified_layout(KSpace3D.title)
         return self.fig
 
 
 class KSpace2D(CompositePlotter, BasePlotter2D):
+    title = "2D K space"
+
     def __init__(
         self,
         lattice: Lattice,
@@ -105,6 +126,19 @@ class KSpace2D(CompositePlotter, BasePlotter2D):
             )
         )
 
+        # 注册磁峰
+        if is_plot_magnetic_peaks:
+            self.add_figure(
+                MagneticPoints2DPlotter(
+                    self._lattice.magn_k_points,
+                    self._lattice.magn_label_list,
+                    self.norm_vector,
+                    self.plane_point,
+                    self.thickness,
+                    self.parallel_new_ex,
+                ).plot()
+            )
+
         # 注册BZ
         self.add_figure(
             BrillouinZone2DPlotter(
@@ -133,5 +167,7 @@ class KSpace2D(CompositePlotter, BasePlotter2D):
 
         # 组装
         self.build_plot(is_plot_detectors)
+
+        self._apply_unified_layout(KSpace2D.title)
 
         return self.fig

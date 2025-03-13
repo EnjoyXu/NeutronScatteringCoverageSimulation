@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, vstack, unique
 
 
 from crystal_toolkit.lattice.lattice_data import LatticeData
@@ -104,17 +104,54 @@ class Lattice(object):
         默认是以a_star,b_star,c_star为基的坐标,若直接输入绝对位置,可将is_hkl设置为False。若要对磁峰画图范围有限制,传入constrain_function(x,y,z),该函数应当输出True/False。
         """
 
-        self.magnetic_constrain_function = constrain_function
+        self._magnetic_constrain_function = constrain_function
 
-        self.magnetic_modulation_vector_list = (
-            magnetic_modulation_vector_list
+        vector_array = (
+            array(magnetic_modulation_vector_list)
             if is_hkl == False
-            else [
-                vector[0] * self.lattice_data.a_star
-                + vector[1] * self.lattice_data.b_star
-                + vector[2] * self.lattice_data.c_star
-                for vector in magnetic_modulation_vector_list
+            else array(
+                [
+                    vector[0] * self.lattice_data.a_star
+                    + vector[1] * self.lattice_data.b_star
+                    + vector[2] * self.lattice_data.c_star
+                    for vector in magnetic_modulation_vector_list
+                ]
+            )
+        )
+
+        # 增加对应的-q点
+        vector_array = vstack(
+            (
+                vector_array,
+                vector_array * -1,
+            )
+        )
+
+        # 防止已经添加过-q了，所以去重
+        self._magnetic_modulation_vector_array = unique(vector_array, axis=0)
+
+        self._define_magnetic_points()
+
+    def _define_magnetic_points(self):
+        # 使用列表推导式批量生成坐标点
+        self.magn_k_points = vstack(
+            [
+                magn_modulation + self.pri_k_points
+                for magn_modulation in self._magnetic_modulation_vector_array
             ]
+        )
+
+        # 应用约束条件
+        if self._magnetic_constrain_function is not None:
+            mask = [
+                self._magnetic_constrain_function(point[0], point[1], point[2])
+                for point in self.magn_k_points
+            ]
+            self.magn_k_points = self.magn_k_points[mask]
+
+        # 坐标转换和标签生成
+        self.magn_label_list = get_points_labels(
+            self.magn_k_points, new_basis=self.lattice_data.conv_reciprocal_matrix
         )
 
     def get_hkl_vector(self, h, k, l):

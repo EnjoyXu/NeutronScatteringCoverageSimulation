@@ -1,9 +1,12 @@
 from traitlets import Bool
 from crystal_toolkit.visualization.plotter_base import BasePlotter
 import plotly.graph_objs as go
+from numpy import ndarray, min, max
 
 
 class CompositePlotter(BasePlotter):
+    title = ""
+
     def __init__(self):
         self.fig_list = []  # 存储注册的绘图组件
         self.fig = go.Figure()
@@ -28,8 +31,6 @@ class CompositePlotter(BasePlotter):
 
         if self.detector and is_plot_detectors:
             self._build_detector_slide_plot()
-
-        self._apply_unified_layout()
 
     def _build_detector_slide_plot(self):
         """组装探测器slides"""
@@ -68,25 +69,42 @@ class CompositePlotter(BasePlotter):
             sliders=sliders,
         )
 
-    def _apply_unified_layout(self):
-        """统一坐标系统和视觉样式"""
-        self.fig.update_layout(
-            scene=dict(
-                xaxis=dict(range=self._calc_axis_range("x"), autorange=False),
-                yaxis=dict(range=self._calc_axis_range("y"), autorange=False),
-                zaxis=dict(range=self._calc_axis_range("z"), autorange=False),
-                aspectmode="data",  # 手动控制宽高比
-                # aspectratio=dict(x=1, y=1, z=1),  # 固定比例
-            ),
+    def _apply_unified_layout(self, title: str):
+        """统一坐标系统和视觉样式(兼容2D/3D)"""
+        is_3d = any(
+            trace.type in ["scatter3d", "surface", "mesh3d"] for trace in self.fig.data
         )
 
+        layout_args = {
+            "title": title,
+            "xaxis": dict(range=self._calc_axis_range("x"), autorange=False),
+            "yaxis": dict(range=self._calc_axis_range("y"), autorange=False),
+        }
+
+        if is_3d:
+            # 3D图形配置
+            layout_args["scene"] = dict(
+                xaxis=layout_args.pop("xaxis"),
+                yaxis=layout_args.pop("yaxis"),
+                zaxis=dict(range=self._calc_axis_range("z"), autorange=False),
+                aspectmode="data",
+            )
+        else:
+            # 2D图形配置
+            layout_args["xaxis"]["scaleanchor"] = "y"  # 保持宽高比一致
+            layout_args["xaxis"]["constrain"] = "domain"
+
+        self.fig.update_layout(**layout_args)
+
     def _calc_axis_range(self, axis: str) -> list:
-        """自动计算所有Trace的坐标范围"""
+        """自动计算所有Trace的坐标范围（兼容空数组）"""
         ranges = []
         for trace in self.fig.data:
             if hasattr(trace, axis):
                 data = getattr(trace, axis)
-                ranges.extend([min(data), max(data)])
+                # 确保是NumPy数组且非空
+                if isinstance(data, ndarray) and data.size > 0:
+                    ranges.extend([min(data), max(data)])
         return [min(ranges), max(ranges)] if ranges else [-10, 10]
 
     @staticmethod

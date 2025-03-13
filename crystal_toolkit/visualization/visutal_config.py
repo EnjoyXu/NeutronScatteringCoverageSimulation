@@ -13,10 +13,19 @@ class VisualConfig:
         "pri_lat_2d_color": "rgba(0,0,0,.7)",
         "BZ": "rgba(0,0,0,.3)",
         "detector": "#00BFFF",
+        "magnetic_points": "rgba(255,0,127,0.1)",
+        "magnetic_points_2d": "rgba(255,0,127,0.5)",
     }
 
-    widths = {"vector": 6.0, "atom_marker": 4, "BZ_edge": 6}
+    widths = {"vector": 6.0, "atom_marker": 4, "BZ_edge": 6, "magnetic_points": 2}
 
-    sizes = {"cone": 0.1, "atom": 4, "detector": 4, "atom_2d": 15}
+    sizes = {
+        "cone": 0.1,
+        "atom": 4,
+        "detector": 4,
+        "atom_2d": 15,
+        "magnetic_points": 4,
+        "magnetic_points_2d": 10,
+    }
 
     opacity = {"detector_2d": 0.3}
