@@ -24,7 +24,8 @@ class LatticeData:
     pri_reciprocal_matrix: ndarray
 
     # 高对称点
-    high_symmetry_kpoints: tuple
+    high_symmetry_kpoints: ndarray
+    high_symmetry_kpoints_label: ndarray
 
     # 以下为自动计算的派生属性
     a: ndarray = field(init=False)

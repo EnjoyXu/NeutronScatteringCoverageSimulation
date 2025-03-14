@@ -15,9 +15,16 @@ class VisualConfig:
         "detector": "#00BFFF",
         "magnetic_points": "rgba(255,0,127,0.1)",
         "magnetic_points_2d": "rgba(255,0,127,0.5)",
+        "high_symmetry_points": "rgb(255,0,0)",
     }
 
-    widths = {"vector": 6.0, "atom_marker": 4, "BZ_edge": 6, "magnetic_points": 2}
+    widths = {
+        "vector": 6.0,
+        "atom_marker": 4,
+        "BZ_edge": 6,
+        "magnetic_points": 2,
+        "high_symmetry_points": 4,
+    }
 
     sizes = {
         "cone": 0.1,
@@ -26,6 +33,7 @@ class VisualConfig:
         "atom_2d": 15,
         "magnetic_points": 4,
         "magnetic_points_2d": 10,
+        "high_symmetry_points": 4,
     }
 
     opacity = {"detector_2d": 0.3}

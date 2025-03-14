@@ -13,6 +13,9 @@ from crystal_toolkit.visualization.plot_2d.magnetic_points2d import (
 from crystal_toolkit.visualization.plot_2d.plotter_2d_base import BasePlotter2D
 from crystal_toolkit.visualization.plot_3d.bz3d import BrillouinZone3DPlotter
 from crystal_toolkit.visualization.plot_3d.detector3d import Detector3DPlotter
+from crystal_toolkit.visualization.plot_3d.high_symmetry_points3d import (
+    HighSymmetryPoints3DPlotter,
+)
 from crystal_toolkit.visualization.plot_3d.lattice3d import Lattice3DPlotter
 from crystal_toolkit.visualization.plot_3d.magnetic_points3d import (
     MagneticPoints3DPlotter,
@@ -61,6 +64,15 @@ class KSpace3D(CompositePlotter):
                 self._lattice.lattice_data.conv_reciprocal_matrix,
             ).plot()
         )
+
+        # 注册高对称点
+        if is_plot_high_symmetry_points:
+            self.add_figure(
+                HighSymmetryPoints3DPlotter(
+                    self._lattice.lattice_data.high_symmetry_kpoints,
+                    self._lattice.lattice_data.high_symmetry_kpoints_label,
+                ).plot()
+            )
 
         # 注册探测器
         if is_plot_detectors:

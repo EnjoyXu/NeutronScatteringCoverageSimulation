@@ -1,3 +1,4 @@
+from crystal_toolkit.lattice.high_symm_points import get_high_symmetry_path_list
 from easyAnalysis import crystal_toolkit
 
 from crystal_toolkit.detector.detector import Detector
@@ -35,7 +36,9 @@ import plotly.graph_objs as go
 
 iplot(
     KSpace3D(lattice, detector).plot(
-        is_plot_detectors=True, is_plot_magnetic_peaks=True
+        is_plot_detectors=True,
+        is_plot_magnetic_peaks=True,
+        is_plot_high_symmetry_points=True,
     )
 )
 

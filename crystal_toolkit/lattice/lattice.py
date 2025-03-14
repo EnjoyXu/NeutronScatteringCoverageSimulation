@@ -58,19 +58,19 @@ class Lattice(object):
 
         pri_reciprocal_lattice = pri_lattice.reciprocal_lattice
 
-        high_symmetry_kpoints_cor, k_labels = KPathLatimerMunro(
+        high_symmetry_kpoints_cor, high_symmetry_kpoints_labels = KPathLatimerMunro(
             primitive_structure
         ).get_kpoints()
         high_symmetry_kpoints_cor = array(high_symmetry_kpoints_cor)
 
-        k_labels = get_points_labels(
+        high_symmetry_kpoints_labels = get_points_labels(
             high_symmetry_kpoints_cor,
             cov_reciprocal_lattice.matrix,
             None,
             "",
             2,
-            k_labels,
-        )
+            high_symmetry_kpoints_labels,
+        )[0]
 
         lattice_data = LatticeData(
             alpha=cov_lattice.alpha,
@@ -80,7 +80,8 @@ class Lattice(object):
             pri_lattice_matrix=pri_lattice.matrix,
             conv_reciprocal_matrix=cov_reciprocal_lattice.matrix,
             pri_reciprocal_matrix=pri_reciprocal_lattice.matrix,
-            high_symmetry_kpoints=(high_symmetry_kpoints_cor, k_labels),
+            high_symmetry_kpoints=high_symmetry_kpoints_cor,
+            high_symmetry_kpoints_label=high_symmetry_kpoints_labels,
         )
 
         return Lattice(
