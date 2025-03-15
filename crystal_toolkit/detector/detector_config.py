@@ -1,3 +1,4 @@
+from types import NoneType
 from typing import List, Optional, Tuple
 import numpy as np
 
@@ -25,7 +26,7 @@ class DetectorConfig:
         self.psi_range = sorted([-psi for psi in self.psi_range])
 
         # 检查v vector的手性，是否与定义的w冲突
-        if len(self.detector_w) != 0:
+        if type(self.detector_w) != NoneType:
             self.detector_v = (
                 self.detector_v
                 if np.dot(np.cross(self.detector_u, self.detector_v), self.detector_w)

@@ -20,7 +20,7 @@ maps = MAPSConfig(
     lattice.get_hkl_vector(-1, 0, 0),
     lattice.get_hkl_vector(0, -1, 0),
     psi_range=[0.0, 10.0],
-    detector_w=lattice.get_hkl_vector(0, 0, 1),
+    # detector_w=lattice.get_hkl_vector(0, 0, 1),
 )
 
 norm = lattice.get_hkl_vector(0, 0, 1)
