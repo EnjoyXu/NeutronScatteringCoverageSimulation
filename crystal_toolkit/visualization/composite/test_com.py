@@ -17,9 +17,10 @@ lattice.set_magnetic_points([[0.138, 0, 1.457]])
 
 maps = MAPSConfig(
     20.0,
-    lattice.get_hkl_vector(1, 0, 0),
-    lattice.get_hkl_vector(0, 1, 0),
-    psi_range=[0.0, 180.0],
+    lattice.get_hkl_vector(-1, 0, 0),
+    lattice.get_hkl_vector(0, -1, 0),
+    psi_range=[0.0, 10.0],
+    detector_w=lattice.get_hkl_vector(0, 0, 1),
 )
 
 norm = lattice.get_hkl_vector(0, 0, 1)
