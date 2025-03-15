@@ -2,7 +2,7 @@
 
 中子散射的模拟程序。目前还在开发中。
 
-
+<div align=center><img src="assets/angle.jpg" /></div>
 
 ## 快速开始 Quick start 
 
