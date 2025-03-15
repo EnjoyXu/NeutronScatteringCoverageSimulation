@@ -34,7 +34,7 @@ class BasePlotter(ABC):
                 # zaxis_title="Z (Å)",
                 aspectmode="data",
             ),
-            margin=dict(l=0, r=0, b=0, t=40),
+            # margin=dict(l=0, r=0, b=0, t=40),
             xaxis=dict(
                 scaleanchor="y",  # 锁定 x 轴比例以匹配 y 轴
                 scaleratio=1,  # x 轴和 y 轴比例 1:1

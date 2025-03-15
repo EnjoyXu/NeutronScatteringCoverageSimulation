@@ -1,5 +1,6 @@
 from crystal_toolkit.detector.detector import Detector
 from crystal_toolkit.math_utils.geometry import points_along_line
+from crystal_toolkit.math_utils.math_utils import coordinate_transform
 from crystal_toolkit.visualization.plotter_base import BasePlotter
 from numpy import append, vstack, repeat, column_stack, sum, array
 from numpy.linalg import norm
@@ -7,7 +8,14 @@ import plotly.graph_objs as go
 
 
 class Detector1DPlotter(BasePlotter):
-    def __init__(self, detector: Detector, k_points_list, width: float, label_list=[]):
+    def __init__(
+        self,
+        detector: Detector,
+        k_points_list,
+        width: float,
+        conv_reciprocal_matrix,
+        label_list=[],
+    ):
         super().__init__()
 
         self._detector = detector
@@ -21,8 +29,29 @@ class Detector1DPlotter(BasePlotter):
             ]
         )
         self.width = width
+        self.reciprocal = conv_reciprocal_matrix
 
         self.detector_points_list = self._get_detector_coverage()
+
+        self.title = self._get_title()
+
+    def _get_title(self):
+        title = "Cutting along lines  "
+        if self._detector != None:
+            u_label = coordinate_transform(
+                self._detector.config.detector_u,
+                self.reciprocal,
+            )
+            v_label = coordinate_transform(
+                self._detector.config.detector_v,
+                self.reciprocal,
+            )
+
+            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={sorted([-psi for psi in self._detector.config.psi_range])}"
+
+            title += f"Ei={self._detector.config.incident_energy} meV"
+
+        return title
 
     def _get_detector_coverage(
         self,
@@ -71,7 +100,7 @@ class Detector1DPlotter(BasePlotter):
             ]
         )
 
-        self._apply_layout("Detector Coverage")
+        self._apply_layout(self.title)
 
         return self.fig
 

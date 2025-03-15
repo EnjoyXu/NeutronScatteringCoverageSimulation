@@ -37,5 +37,10 @@ k_points = [
 ]
 
 iplot(
-    Detector1DPlotter(detector, k_points, lattice.lattice_data.a_star_par / 10).plot()
+    Detector1DPlotter(
+        detector,
+        k_points,
+        lattice.lattice_data.a_star_par / 10,
+        lattice.lattice_data.conv_reciprocal_matrix,
+    ).plot()
 )

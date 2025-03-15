@@ -1,16 +1,22 @@
+from abc import abstractmethod
 from traitlets import Bool
+from crystal_toolkit.math_utils.math_utils import coordinate_transform
 from crystal_toolkit.visualization.plotter_base import BasePlotter
 import plotly.graph_objs as go
 from numpy import ndarray, min, max
 
 
 class CompositePlotter(BasePlotter):
-    title = ""
-
     def __init__(self):
         self.fig_list = []  # 存储注册的绘图组件
         self.fig = go.Figure()
         self.detector = {}
+        self.title = ""
+
+    @abstractmethod
+    def _get_title(self):
+
+        return ""
 
     def add_detector_figure(
         self, detector_fig: go.Figure, detector_title, deetctor_label
@@ -57,7 +63,12 @@ class CompositePlotter(BasePlotter):
                     args=[
                         # 设置可见性：保留底图，更新覆盖层
                         {"visible": [True] * other_trace_length + visible_states},
-                        {"title": title},
+                        {
+                            "title": {
+                                "text": self.title + title,
+                                # ,  # 自定义样式
+                            }
+                        },
                     ],
                     label=label,
                 )
@@ -65,18 +76,18 @@ class CompositePlotter(BasePlotter):
 
         sliders = [dict(active=0, currentvalue={"prefix": f"dE:"}, steps=steps)]
 
-        self.fig.update_layout(
-            sliders=sliders,
-        )
+        self.fig.update_layout(sliders=sliders)
 
-    def _apply_unified_layout(self, title: str):
+    def _apply_unified_layout(
+        self,
+    ):
         """统一坐标系统和视觉样式(兼容2D/3D)"""
         is_3d = any(
             trace.type in ["scatter3d", "surface", "mesh3d"] for trace in self.fig.data
         )
 
         layout_args = {
-            "title": title,
+            "title": self.title,
             "xaxis": dict(range=self._calc_axis_range("x"), autorange=False),
             "yaxis": dict(range=self._calc_axis_range("y"), autorange=False),
         }

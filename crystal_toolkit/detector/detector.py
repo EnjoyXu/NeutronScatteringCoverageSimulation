@@ -40,6 +40,11 @@ class Detector(object):
 
         self.label_list = [f"{energy_loss:.1f}:" for energy_loss in self.dE]
 
+    # # TODO add from .par
+    # @staticmethod
+    # def get_from_par(par_file_path: str):
+    #     pass
+
 
 def get_detector_coordinates(
     incident_energy: float,

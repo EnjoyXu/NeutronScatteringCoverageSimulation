@@ -3,6 +3,7 @@ from typing import Optional
 from numpy import ndarray
 from crystal_toolkit.detector.detector import Detector
 from crystal_toolkit.lattice.lattice import Lattice
+from crystal_toolkit.math_utils.math_utils import coordinate_transform
 from crystal_toolkit.visualization.composite.composite_base import CompositePlotter
 from crystal_toolkit.visualization.plot_2d.bz2d import BrillouinZone2DPlotter
 from crystal_toolkit.visualization.plot_2d.detector2d import Detector2DPlotter
@@ -23,12 +24,28 @@ from crystal_toolkit.visualization.plot_3d.magnetic_points3d import (
 
 
 class KSpace3D(CompositePlotter):
-    title = "3D K space"
-
     def __init__(self, lattice: Lattice, detector: Optional[Detector] = None):
         super().__init__()
         self._lattice = lattice
         self._detector = detector
+        self.title = self._get_title()
+
+    def _get_title(self):
+        title = "3D Kspace "
+        title = ""
+        if self._detector != None:
+            u_label = coordinate_transform(
+                self._detector.config.detector_u,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+            v_label = coordinate_transform(
+                self._detector.config.detector_v,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+
+            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={sorted([-psi for psi in self._detector.config.psi_range])}"
+
+        return title
 
     def plot(
         self,
@@ -86,13 +103,11 @@ class KSpace3D(CompositePlotter):
         self.build_plot(is_plot_detectors)
 
         # 统一layout
-        self._apply_unified_layout(KSpace3D.title)
+        self._apply_unified_layout(self.title)
         return self.fig
 
 
 class KSpace2D(CompositePlotter, BasePlotter2D):
-    title = "2D K space"
-
     def __init__(
         self,
         lattice: Lattice,
@@ -112,6 +127,42 @@ class KSpace2D(CompositePlotter, BasePlotter2D):
 
         self._lattice = lattice
         self._detector = detector
+        self.title = self._get_title()
+
+    def _get_title(self):
+
+        title = "2D Kspace "
+        title = ""
+        if self._detector != None:
+            u_label = coordinate_transform(
+                self._detector.config.detector_u,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+            v_label = coordinate_transform(
+                self._detector.config.detector_v,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+
+            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={sorted([-psi for psi in self._detector.config.psi_range])}"
+
+            norm_label = coordinate_transform(
+                self.plane_point,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+
+            point_label = coordinate_transform(
+                self.norm_vector,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+
+            new_ex_label = coordinate_transform(
+                self.parallel_new_ex,
+                self._lattice.lattice_data.conv_reciprocal_matrix,
+            )
+
+            title += f"\ncut plane norm({norm_label[0]:.2f},{norm_label[1]:.2f},{norm_label[2]:.2f}), point on the plane ({point_label[0]:.2f},{point_label[1]:.2f},{point_label[2]:.2f}), new_ex({new_ex_label[0]:.2f},{new_ex_label[1]:.2f},{new_ex_label[2]:.2f})"
+
+        return title
 
     def plot(
         self,
@@ -180,6 +231,6 @@ class KSpace2D(CompositePlotter, BasePlotter2D):
         # 组装
         self.build_plot(is_plot_detectors)
 
-        self._apply_unified_layout(KSpace2D.title)
+        self._apply_unified_layout()
 
         return self.fig
