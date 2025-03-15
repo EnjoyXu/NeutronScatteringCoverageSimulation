@@ -103,7 +103,7 @@ class KSpace3D(CompositePlotter):
         self.build_plot(is_plot_detectors)
 
         # 统一layout
-        self._apply_unified_layout(self.title)
+        self._apply_unified_layout()
         return self.fig
 
 
