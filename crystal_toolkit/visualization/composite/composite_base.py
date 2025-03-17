@@ -10,51 +10,48 @@ class CompositePlotter(BasePlotter):
     def __init__(self):
         self.fig_list = []  # 存储注册的绘图组件
         self.fig = go.Figure()
-        self.detector = {}
+        self.slider = {}
         self.title = ""
 
     @abstractmethod
-    def _get_title(self):
+    def _get_title(self) -> str:
+        pass
 
-        return ""
-
-    def add_detector_figure(
-        self, detector_fig: go.Figure, detector_title, deetctor_label
-    ):
+    def add_slider_figure(self, slider_fig: go.Figure, slider_title, slider_label):
         """注册探测器组件"""
-        self.detector["figure"] = detector_fig
-        self.detector["title"] = detector_title
-        self.detector["label"] = deetctor_label
+        self.slider["figure"] = slider_fig
+        self.slider["title"] = slider_title
+        self.slider["label"] = slider_label
 
     def add_figure(self, fig: go.Figure):
         """注册可视化组件"""
         self.fig_list.append(fig)
 
-    def build_plot(self, is_plot_detectors=False):
+    def build_plot(self, is_plot_slider=False):
         """组装figures"""
         for figure in self.fig_list:
             self.fig = CompositePlotter.merge(self.fig, figure)
 
-        if self.detector and is_plot_detectors:
-            self._build_detector_slide_plot()
+        if self.slider and is_plot_slider:
+            self._build_slider_plot()
 
-    def _build_detector_slide_plot(self):
-        """组装探测器slides"""
+    def _build_slider_plot(self):
+        """组装slider"""
         other_trace_length = len(self.fig.data)
-        detector_length = len(self.detector["figure"].data)
+        slider_length = len(self.slider["figure"].data)
 
-        # 第0帧:将非弹detector图像都不可见
-        for i in range(1, detector_length):
-            self.detector["figure"].data[i].visible = False
+        # 第0帧:将非弹slider图像都不可见
+        for i in range(1, slider_length):
+            self.slider["figure"].data[i].visible = False
 
-        self.fig = CompositePlotter.merge(self.fig, self.detector["figure"])
+        self.fig = CompositePlotter.merge(self.fig, self.slider["figure"])
 
         steps = []
 
         for i, title, label in zip(
-            range(detector_length), self.detector["title"], self.detector["label"]
+            range(slider_length), self.slider["title"], self.slider["label"]
         ):
-            visible_states = [False] * detector_length
+            visible_states = [False] * slider_length
             visible_states[i] = True  # 仅当前轨迹可见
 
             steps.append(
@@ -74,7 +71,13 @@ class CompositePlotter(BasePlotter):
                 )
             )
 
-        sliders = [dict(active=0, currentvalue={"prefix": f"dE:"}, steps=steps)]
+        sliders = [
+            dict(
+                active=0,
+                steps=steps,
+                # currentvalue={"prefix": f"dE:"}
+            )
+        ]
 
         self.fig.update_layout(sliders=sliders)
 

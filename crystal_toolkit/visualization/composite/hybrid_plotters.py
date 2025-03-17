@@ -93,7 +93,7 @@ class KSpace3D(CompositePlotter):
 
         # 注册探测器
         if is_plot_detectors:
-            self.add_detector_figure(
+            self.add_slider_figure(
                 Detector3DPlotter(self._detector).plot(),
                 self._detector.title_list,
                 self._detector.label_list,
