@@ -8,6 +8,7 @@ from numpy import ndarray, min, max
 
 class CompositePlotter(BasePlotter):
     def __init__(self):
+        super().__init__()
         self.fig_list = []  # 存储注册的绘图组件
         self.fig = go.Figure()
         self.slider = {}

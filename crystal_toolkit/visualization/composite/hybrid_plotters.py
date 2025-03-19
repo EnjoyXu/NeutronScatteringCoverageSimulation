@@ -107,7 +107,10 @@ class KSpace3D(CompositePlotter):
         return self.fig
 
 
-class KSpace2D(CompositePlotter, BasePlotter2D):
+class KSpace2D(
+    BasePlotter2D,
+    CompositePlotter,
+):
     def __init__(
         self,
         lattice: Lattice,
@@ -117,12 +120,12 @@ class KSpace2D(CompositePlotter, BasePlotter2D):
         parallel_new_ex: ndarray,
         detector: Optional[Detector] = None,
     ):
-        CompositePlotter.__init__(
-            self,
-        )
-
         BasePlotter2D.__init__(
             self, norm_vector, plane_point, thickness, parallel_new_ex
+        )
+
+        CompositePlotter.__init__(
+            self,
         )
 
         self._lattice = lattice
@@ -216,7 +219,7 @@ class KSpace2D(CompositePlotter, BasePlotter2D):
 
         # 注册探测器
         if is_plot_detectors:
-            self.add_detector_figure(
+            self.add_slider_figure(
                 Detector2DPlotter(
                     self._detector,
                     self.norm_vector,
