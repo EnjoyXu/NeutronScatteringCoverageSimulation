@@ -5,6 +5,8 @@ import numpy as np
 
 from dataclasses import dataclass, field
 
+from crystal_toolkit.math_utils.math_utils import normalize_vector
+
 
 @dataclass
 class DetectorConfig:
@@ -14,16 +16,25 @@ class DetectorConfig:
     # 晶体旋转的角度
     psi_range: Tuple[float, float]
     phi_ranges: List[Tuple[float, float]]
-    theta_ranges_: List[Tuple[float, float]]
+    theta_ranges_direct: List[Tuple[float, float]]
 
     detector_w: Optional[np.ndarray] = None
+    is_parallel = True  # 兼容u与ki反平行的情况
 
     def __post_init__(self):
         # 将theta值从以u,v平面为0转化为一般的球坐标系中的theta值
-        self.theta_ranges = [sorted([90 - x[0], 90 - x[1]]) for x in self.theta_ranges_]
+        self.theta_ranges = [
+            sorted([90 - x[0], 90 - x[1]]) for x in self.theta_ranges_direct
+        ]
 
         # 由于定义的是晶体旋转的角度，但是之后的计算中，是转动入射方向的，所以相对的，这里需要将角度全部反向
         self.psi_range = sorted([-psi for psi in self.psi_range])
+
+        if self.is_parallel == False:
+            # u 反平行
+            self.detector_u *= -1
+            # 由于v决定手性，为保持手性不变，v也必须反号
+            self.detector_v *= -1
 
         # 检查v vector的手性，是否与定义的w冲突
         if type(self.detector_w) != NoneType:
@@ -33,15 +44,18 @@ class DetectorConfig:
                 >= 0
                 else -self.detector_v
             )
+        # 归一化uv
+        self.detector_u = normalize_vector(self.detector_u)
+        self.detector_v = normalize_vector(self.detector_v)
 
 
 @dataclass
 class MAPSConfig(DetectorConfig):
     phi_ranges: List[Tuple[float, float]] = field(
-        default_factory=lambda: [[3, 20], [-20, 20], [-20, 20], [-60, -3]]
+        default_factory=lambda: [[3, 20], [-20, 20], [-20, 20], [-60, -20], [-20, -3]]
     )
-    theta_ranges: List[Tuple[float, float]] = field(
-        default_factory=lambda: [[-7, 7], [3, 20], [-20, -3], [-7, 7]]
+    theta_ranges_direct: List[Tuple[float, float]] = field(
+        default_factory=lambda: [[-3, 3], [3, 20], [-20, -3], [-7, 7], [-3, 3]]
     )
 
 
@@ -49,4 +63,6 @@ class MAPSConfig(DetectorConfig):
 class FourSEASONSConfig(DetectorConfig):
 
     phi_ranges: List[Tuple[float, float]] = field(default_factory=lambda: [[-35, 130]])
-    theta_ranges: List[Tuple[float, float]] = field(default_factory=lambda: [[-25, 27]])
+    theta_ranges_direct: List[Tuple[float, float]] = field(
+        default_factory=lambda: [[-25, 27]]
+    )
