@@ -43,7 +43,7 @@ class KSpace3D(CompositePlotter):
                 self._lattice.lattice_data.conv_reciprocal_matrix,
             )
 
-            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={sorted([-psi for psi in self._detector.config.psi_range])}"
+            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={self._detector.config.psi_range}"
 
         return title
 
@@ -146,7 +146,7 @@ class KSpace2D(
                 self._lattice.lattice_data.conv_reciprocal_matrix,
             )
 
-            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={sorted([-psi for psi in self._detector.config.psi_range])}"
+            title += f"u=({u_label[0]:.2f},{u_label[1]:.2f},{u_label[2]:.2f}),v=({v_label[0]:.2f},{v_label[1]:.2f},{v_label[2]:.2f}),psi={self._detector.config.psi_range}"
 
             norm_label = coordinate_transform(
                 self.plane_point,
