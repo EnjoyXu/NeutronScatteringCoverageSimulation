@@ -25,9 +25,12 @@ class Detector1DPlotter(BasePlotter):
             if len(label_list) != 0
             else [
                 f"{point[0]:.3f},{point[1]:.3f},{point[2]:.3f}"
-                for point in self.k_points_list
+                for point in coordinate_transform(
+                    array(self.k_points_list), new_basis=conv_reciprocal_matrix
+                )
             ]
         )
+
         self.width = width
         self.reciprocal = conv_reciprocal_matrix
 
