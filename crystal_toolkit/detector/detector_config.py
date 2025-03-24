@@ -27,9 +27,6 @@ class DetectorConfig:
             sorted([90 - x[0], 90 - x[1]]) for x in self.theta_ranges_direct
         ]
 
-        # 由于定义的是晶体旋转的角度，但是之后的计算中，是转动入射方向的，所以相对的，这里需要将角度全部反向
-        self.psi_range = sorted([-psi for psi in self.psi_range])
-
         if self.is_parallel == False:
             # u 反平行
             self.detector_u *= -1
