@@ -3,6 +3,7 @@ from traitlets import Bool
 from crystal_toolkit.detector.detector_config import DetectorConfig
 from crystal_toolkit.math_utils.geometry import get_perp_plane, get_plane_line_cross
 from crystal_toolkit.math_utils.math_utils import (
+    build_orthogonal_basis,
     coordinate_transform,
     coordinate_transform_from_xyz_to_sphere,
     normalize_vector,
@@ -53,15 +54,16 @@ class Detector(object):
     #     pass
 
     def get_available_points_coordinates_white_beam(
-        self,
-        points: np.ndarray,
-        k_min: float,
-        k_max: float,
+        self, points: np.ndarray, k_min: float, k_max: float, u=None, v=None
     ):
         """判断点是否能被n=1级Bragg散射探测到,并返回能探测到的点的探测中子vec(kf)的球坐标以及探测点的原始坐标"""
 
+        if np.any(u) or np.any(v):
+            u = self.config.detector_u
+            v = self.config.detector_v
+
         # 首先查看点是否在k_min,k_max包围之内
-        points_filter = self._filter_distance(points, k_min, k_max)
+        points_filter = self._filter_distance(points, k_min, k_max, u)
 
         # 点与(0,0,0)的中垂面
         normal_plane_par_list = [
@@ -71,7 +73,7 @@ class Detector(object):
         # 求中垂面与u_vec的交点
         cross_point = np.array(
             [
-                get_plane_line_cross([0, 0, 0], self.config.detector_u, plane_par)
+                get_plane_line_cross([0, 0, 0], u, plane_par)
                 for plane_par in (normal_plane_par_list)
             ]
         )
@@ -79,7 +81,7 @@ class Detector(object):
         sphere_cor = coordinate_transform_from_xyz_to_sphere(
             coordinate_transform(
                 points_filter - cross_point,
-                _build_detector_basis(self.config.detector_u, self.config.detector_v),
+                build_orthogonal_basis(u, v),
             )
         )
 
@@ -87,7 +89,11 @@ class Detector(object):
 
         return sphere_cor[mask], points_filter[mask]
 
-    def _is_covered(self, theta_arr: np.ndarray, phi_arr: np.ndarray) -> List[Boolean]:
+    def _is_covered(
+        self,
+        theta_arr: np.ndarray,
+        phi_arr: np.ndarray,
+    ) -> List[Boolean]:
         """通过theta,phi判断点是否在探测器角度cover范围内,角度为弧度制"""
         theta_arr = wrap_to_interval(np.rad2deg(theta_arr), 0, 180)
         phi_arr = wrap_to_interval(np.rad2deg(phi_arr), -180, 180)
@@ -107,19 +113,25 @@ class Detector(object):
                 mask.append(False)
         return mask
 
-    def _filter_distance(self, k_points, k_min, k_max):
+    def _filter_distance(
+        self,
+        k_points,
+        k_min,
+        k_max,
+        u=None,
+    ):
         """用于白光的定向,首先通过波长先确定白光能探测到的k点"""
-        n = np.linalg.norm(
-            k_points + (self.config.detector_u * k_min).reshape(1, 3), axis=1
-        )
+
+        if np.any(u):
+            u = self.config.detector_u
+
+        n = np.linalg.norm(k_points + (u * k_min).reshape(1, 3), axis=1)
 
         mask = n >= k_min
 
         points_filter = k_points[mask]
 
-        n = np.linalg.norm(
-            points_filter + (self.config.detector_u * k_max).reshape(1, 3), axis=1
-        )
+        n = np.linalg.norm(points_filter + (u * k_max).reshape(1, 3), axis=1)
 
         mask = n <= k_max
 
@@ -158,7 +170,7 @@ def get_detector_coordinates(
     k_i, k_f = _calculate_wave_vectors(incident_energy, energy_loss)
 
     # 构建探测器坐标系变换矩阵
-    basis_matrix = _build_detector_basis(detector_u, detector_v)  # 3x3
+    basis_matrix = build_orthogonal_basis(detector_u, detector_v)  # 3x3
 
     # 生成球坐标系采样点（每行为一个点）
     sphere_points = _generate_sphere_points(
@@ -176,7 +188,10 @@ def get_detector_coordinates(
     )  # 行向量运算
 
     # 绕法线轴旋转
-    return _apply_psi_rotation(detector_points, basis_matrix[2], psi_range, angle_step)
+    return (
+        _apply_psi_rotation(detector_points, basis_matrix[2], psi_range, angle_step)
+        * -1  # 因为之前算的是Kf-Ki,但样品系统的信息应该是Q=Ki-Kf
+    )
 
 
 def _validate_angle_ranges(
@@ -196,13 +211,13 @@ def _calculate_wave_vectors(E_i: float, dE: float) -> Tuple[float, float]:
     return (0.695 * np.sqrt(E_i), 0.695 * np.sqrt(max(E_i - dE, 1e-6)))  # 防止负能量
 
 
-def _build_detector_basis(u: np.ndarray, v: np.ndarray) -> np.ndarray:
-    """构建正交探测器坐标系矩阵 (3x3)"""
-    u_unit = normalize_vector(u)
-    v_proj = v - u_unit * np.dot(v, u_unit)  # Smith正交
-    v_unit = normalize_vector(v_proj)
-    w_unit = np.cross(u_unit, v_unit)
-    return np.vstack((u_unit, v_unit, w_unit))  # 基向量按行存储
+# def _build_detector_basis(u: np.ndarray, v: np.ndarray) -> np.ndarray:
+#     """构建正交探测器坐标系矩阵 (3x3)"""
+#     u_unit = normalize_vector(u)
+#     v_proj = v - u_unit * np.dot(v, u_unit)  # Smith正交
+#     v_unit = normalize_vector(v_proj)
+#     w_unit = np.cross(u_unit, v_unit)
+#     return np.vstack((u_unit, v_unit, w_unit))  # 基向量按行存储
 
 
 def _generate_sphere_points(
