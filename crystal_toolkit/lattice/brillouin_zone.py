@@ -3,7 +3,10 @@ from typing import Tuple
 from matplotlib.pyplot import scatter
 import numpy as np
 
-from crystal_toolkit.math_utils.geometry import generate_line_points, points_in_plane
+from crystal_toolkit.math_utils.geometry import (
+    generate_line_points,
+    points_in_plane,
+)
 
 
 def get_wigner_size_cell_3d(a, b, c):

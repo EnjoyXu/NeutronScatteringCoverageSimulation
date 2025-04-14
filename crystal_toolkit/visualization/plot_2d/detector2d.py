@@ -2,7 +2,9 @@ from crystal_toolkit.detector.detector import Detector
 from numpy import ndarray
 import plotly.graph_objs as go
 
-from crystal_toolkit.visualization.plot_2d.plotter_2d_base import BasePlotter2D
+from crystal_toolkit.visualization.plot_2d.plotter_2d_base import (
+    BasePlotter2D,
+)
 
 
 class Detector2DPlotter(BasePlotter2D):

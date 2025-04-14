@@ -4,20 +4,36 @@ from numpy import ndarray
 from crystal_toolkit.detector.detector import Detector
 from crystal_toolkit.lattice.lattice import Lattice
 from crystal_toolkit.math_utils.math_utils import coordinate_transform
-from crystal_toolkit.visualization.composite.composite_base import CompositePlotter
-from crystal_toolkit.visualization.plot_2d.bz2d import BrillouinZone2DPlotter
-from crystal_toolkit.visualization.plot_2d.detector2d import Detector2DPlotter
-from crystal_toolkit.visualization.plot_2d.lattice_2d import Lattice2DPlotter
+from crystal_toolkit.visualization.composite.composite_base import (
+    CompositePlotter,
+)
+from crystal_toolkit.visualization.plot_2d.bz2d import (
+    BrillouinZone2DPlotter,
+)
+from crystal_toolkit.visualization.plot_2d.detector2d import (
+    Detector2DPlotter,
+)
+from crystal_toolkit.visualization.plot_2d.lattice_2d import (
+    Lattice2DPlotter,
+)
 from crystal_toolkit.visualization.plot_2d.magnetic_points2d import (
     MagneticPoints2DPlotter,
 )
-from crystal_toolkit.visualization.plot_2d.plotter_2d_base import BasePlotter2D
-from crystal_toolkit.visualization.plot_3d.bz3d import BrillouinZone3DPlotter
-from crystal_toolkit.visualization.plot_3d.detector3d import Detector3DPlotter
+from crystal_toolkit.visualization.plot_2d.plotter_2d_base import (
+    BasePlotter2D,
+)
+from crystal_toolkit.visualization.plot_3d.bz3d import (
+    BrillouinZone3DPlotter,
+)
+from crystal_toolkit.visualization.plot_3d.detector3d import (
+    Detector3DPlotter,
+)
 from crystal_toolkit.visualization.plot_3d.high_symmetry_points3d import (
     HighSymmetryPoints3DPlotter,
 )
-from crystal_toolkit.visualization.plot_3d.lattice3d import Lattice3DPlotter
+from crystal_toolkit.visualization.plot_3d.lattice3d import (
+    Lattice3DPlotter,
+)
 from crystal_toolkit.visualization.plot_3d.magnetic_points3d import (
     MagneticPoints3DPlotter,
 )

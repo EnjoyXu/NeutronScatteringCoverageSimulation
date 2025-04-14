@@ -5,7 +5,9 @@ from crystal_toolkit.math_utils.geometry import (
     get_convex_vertice_points_2d,
 )
 from crystal_toolkit.math_utils.math_utils import get_points_labels
-from crystal_toolkit.visualization.plot_2d.plotter_2d_base import BasePlotter2D
+from crystal_toolkit.visualization.plot_2d.plotter_2d_base import (
+    BasePlotter2D,
+)
 import plotly.graph_objs as go
 
 

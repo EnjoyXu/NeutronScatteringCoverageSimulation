@@ -1,6 +1,4 @@
 from abc import abstractmethod
-from traitlets import Bool
-from crystal_toolkit.math_utils.math_utils import coordinate_transform
 from crystal_toolkit.visualization.plotter_base import BasePlotter
 import plotly.graph_objs as go
 from numpy import ndarray, min, max
@@ -42,6 +40,7 @@ class CompositePlotter(BasePlotter):
         slider_length = len(self.slider["figure"].data)
 
         # 第0帧:将非弹slider图像都不可见
+        self.slider["figure"].data[0].visible = True
         for i in range(1, slider_length):
             self.slider["figure"].data[i].visible = False
 

@@ -1,7 +1,10 @@
 from narwhals import Boolean
 from traitlets import Bool
 from crystal_toolkit.detector.detector_config import DetectorConfig
-from crystal_toolkit.math_utils.geometry import get_perp_plane, get_plane_line_cross
+from crystal_toolkit.math_utils.geometry import (
+    get_perp_plane,
+    get_plane_line_cross,
+)
 from crystal_toolkit.math_utils.math_utils import (
     build_orthogonal_basis,
     coordinate_transform,

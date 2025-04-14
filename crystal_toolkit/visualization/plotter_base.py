@@ -3,6 +3,8 @@ import plotly.graph_objs as go
 
 from crystal_toolkit.visualization.visutal_config import VisualConfig
 
+from plotly.offline import iplot
+
 
 class BasePlotter(ABC):
     def __init__(self, config=None):
@@ -48,3 +50,6 @@ class BasePlotter(ABC):
     def save_html(self, filename: str) -> None:
         """保存为交互式HTML文件"""
         self.fig.write_html(filename)
+
+    def show(self):
+        iplot(self.fig)

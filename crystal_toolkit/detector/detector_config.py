@@ -58,6 +58,14 @@ class MAPSConfig(DetectorConfig):
 
 
 @dataclass
+class LETConfig(DetectorConfig):
+    phi_ranges: List[Tuple[float, float]] = field(default_factory=lambda: [[-40, 140]])
+    theta_ranges_direct: List[Tuple[float, float]] = field(
+        default_factory=lambda: [[-30, 30]]
+    )
+
+
+@dataclass
 class FourSEASONSConfig(DetectorConfig):
 
     phi_ranges: List[Tuple[float, float]] = field(default_factory=lambda: [[-35, 130]])

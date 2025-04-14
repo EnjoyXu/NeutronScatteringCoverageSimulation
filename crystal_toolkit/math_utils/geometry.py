@@ -1,7 +1,11 @@
+from matplotlib.pylab import norm
 import numpy as np
 from pkg_resources import parse_requirements
 
-from crystal_toolkit.math_utils.math_utils import coordinate_transform, normalize_vector
+from crystal_toolkit.math_utils.math_utils import (
+    coordinate_transform,
+    normalize_vector,
+)
 
 
 def points_along_line(
@@ -167,3 +171,29 @@ def get_convex_vertice_points_2d(points_2d, *labels_list):
     filter_labels = [np.array(label)[vertices_idx] for label in labels_list]
 
     return (ver_points, *filter_labels) if labels_list else ver_points
+
+
+def get_perp_plane(point1: np.ndarray, point2: np.ndarray):
+    """返回两点之间的中垂面坐标(A,B,C,D)"""
+    mid_point = (point1 + point2) / 2
+
+    norm_vector = point2 - point1
+
+    return np.append(norm_vector, [-1 * np.dot(norm_vector, mid_point)])
+
+
+def get_plane_line_cross(
+    line_point1: np.ndarray, line_point2: np.ndarray, plane_parameters: np.ndarray
+) -> np.ndarray:
+    """得到平面与线段的交点坐标"""
+
+    diff = line_point2 - line_point1
+    norm_vector = plane_parameters[:3]
+
+    nominator = -1 * (np.dot(norm_vector, line_point1) + plane_parameters[-1])
+
+    if nominator == 0:
+        return line_point1
+
+    demoninator = np.dot(norm_vector, diff)
+    return line_point1 + (nominator / demoninator) * diff
