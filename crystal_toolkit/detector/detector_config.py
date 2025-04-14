@@ -44,6 +44,7 @@ class DetectorConfig:
         # 归一化uv
         self.detector_u = normalize_vector(self.detector_u)
         self.detector_v = normalize_vector(self.detector_v)
+        self.detector_w = normalize_vector(np.cross(self.detector_u, self.detector_v))
 
 
 @dataclass
