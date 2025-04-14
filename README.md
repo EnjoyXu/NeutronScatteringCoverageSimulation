@@ -8,13 +8,16 @@
 
 ### 安装 Installation 
 
-下载解压crystal_toolkit即可。目前还没计划上传到PyPI。
-
+下载解压后，将终端路径调整到解压后到文件夹内，输入
+```
+pip install .
+```
+即可安装完成。
 
 
 ### 使用 Usage
 
-在解压的同一目录下创建python脚本，导入模块`from crystal_toolkit import *`
+安装完成后即可使用。具体可参考下方的例子。
 
 
 
@@ -59,11 +62,10 @@ detector_config = DetectorConfig(
 
 detector = Detector(detector_config, slice_number=slice_number, angle_step=angle_step)
 
-iplot(
-    KSpace3D(lattice, detector).plot(
-        is_plot_detectors=True, is_plot_magnetic_peaks=True
-    )
-)
+KSpace3D(lattice, detector).plot(
+    is_plot_detectors=True, is_plot_magnetic_peaks=True
+).show()
+
 
 ```
 
@@ -115,11 +117,10 @@ detector_config = DetectorConfig(
 
 detector = Detector(detector_config, slice_number=slice_number, angle_step=angle_step)
 
-iplot(
-    KSpace2D(lattice, norm, plane_point, thick, new_ex, detector).plot(
-        is_plot_detectors=True, is_plot_magnetic_peaks=True
-    )
-)
+
+KSpace2D(lattice, norm, plane_point, thick, new_ex, detector).plot(
+    is_plot_detectors=True, is_plot_magnetic_peaks=True
+).show()
 
 
 ```
@@ -177,14 +178,12 @@ detector_config = DetectorConfig(
 
 detector = Detector(detector_config, slice_number=slice_number, angle_step=angle_step)
 
-iplot(
-    Detector1DPlotter(
-        detector,
-        q_points,
-        width,
-        lattice.lattice_data.conv_reciprocal_matrix,
-    ).plot()
-)
+Detector1DPlotter(
+    detector,
+    q_points,
+    width,
+    lattice.lattice_data.conv_reciprocal_matrix,
+).plot().show()
 
 ```
 
