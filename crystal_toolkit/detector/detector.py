@@ -61,7 +61,7 @@ class Detector(object):
     ):
         """判断点是否能被n=1级Bragg散射探测到,并返回能探测到的点的探测中子vec(kf)的球坐标以及探测点的原始坐标"""
 
-        if np.any(u) or np.any(v):
+        if u is None or v is None:
             u = self.config.detector_u
             v = self.config.detector_v
 
