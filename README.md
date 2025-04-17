@@ -188,7 +188,7 @@ Detector1DPlotter(
 ```
 
 ##### 白光align模拟
-这个函数稍微复杂一些，使用dash写的，所以需要打开浏览器。关闭时也需要手动关闭dash服务器。
+这个函数稍微复杂一些，是用dash写的，所以需要打开浏览器输入对应的本地服务器地址。关闭时也需要手动关闭dash服务器。
 
 ```python
 from crystal_toolkit import *
@@ -198,8 +198,6 @@ lattice = Lattice.from_cif(
     "cif path",
     reciprocal_lattice_N_list = [3, 3, 5], # -3<=H<=3 , -3<=K<=3,-5<=L<=5
 )
-
-lattice.set_magnetic_points([[0.5,0,0]]) #设置磁峰，出现位置为G+q, G-q
 
 u = lattice.get_hkl_vector(0, 0, 1) # u的方向就是入射中子的方向
 v = lattice.get_hkl_vector(1, 0, 0) # v与u一起决定散射平面
@@ -213,15 +211,6 @@ theta = [[-10,10],[-7,7]]
 
 slice_number = 10 #dE从0到Ei共画多少张图
 angle_step = 2 #张成探测器coverage时的角度步长
-
-# 定义需要cover的q点
-q_points = [
-    lattice.get_hkl_vector(0, 0, 0),
-    lattice.get_hkl_vector(-1, 0, 2),
-    lattice.get_hkl_vector(-1, 0, -1),
-]
-
-width = lattice.lattice_data.a_star_par / 20 #设置投影的线的宽度
 
 
 detector_config = DetectorConfig(
