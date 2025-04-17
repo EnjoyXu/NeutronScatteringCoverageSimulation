@@ -4,4 +4,5 @@
 # from plotly.offline import iplot
 from .visualization.dash_plot import dash_plot
 from .visualization.composite.hybrid_plotters import *
+from .visualization.composite.alignment2d import Alignment2DPlotter
 from .visualization.plot_1d import *
