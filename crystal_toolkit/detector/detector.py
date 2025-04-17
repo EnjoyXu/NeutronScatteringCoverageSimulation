@@ -27,22 +27,10 @@ class Detector(object):
             0, self.config.incident_energy, slice_number, endpoint=False
         )
 
-        # python能不能像kotlin一样用到的时候再去加载？
-        self.detector_points_list = [
-            get_detector_coordinates(
-                incident_energy=self.config.incident_energy,
-                energy_loss=energy_loss,
-                detector_u=self.config.detector_u,
-                detector_v=self.config.detector_v,
-                phi_ranges=self.config.phi_ranges,
-                theta_ranges=self.config.theta_ranges,
-                psi_range=sorted(
-                    [-psi for psi in self.config.psi_range]
-                ),  # 由于定义的是晶体旋转的角度，但是之后的计算中，是转动入射方向的，所以相对的，这里需要将角度全部反向
-                angle_step=angle_step,
-            )
-            for energy_loss in self.dE
-        ]
+        self.angle_step = angle_step
+
+        # Lazy load
+        self._detector_points_list = None
 
         self.title_list = [
             f"Ei={self.config.incident_energy:.1f} meV, dE={energy_loss:.1f} meV, Ef = {self.config.incident_energy-energy_loss:.1f}"
@@ -55,6 +43,24 @@ class Detector(object):
     # @staticmethod
     # def get_from_par(par_file_path: str):
     #     pass
+    @property
+    def detector_points_list(self):
+        if self._detector_points_list is None:
+            return [
+                get_detector_coordinates(
+                    incident_energy=self.config.incident_energy,
+                    energy_loss=energy_loss,
+                    detector_u=self.config.detector_u,
+                    detector_v=self.config.detector_v,
+                    phi_ranges=self.config.phi_ranges,
+                    theta_ranges=self.config.theta_ranges,
+                    psi_range=sorted(
+                        [-psi for psi in self.config.psi_range]
+                    ),  # 由于定义的是晶体旋转的角度，但是之后的计算中，是转动入射方向的，所以相对的，这里需要将角度全部反向
+                    angle_step=self.angle_step,
+                )
+                for energy_loss in self.dE
+            ]
 
     def get_available_points_coordinates_white_beam(
         self, points: np.ndarray, k_min: float, k_max: float, u=None, v=None
