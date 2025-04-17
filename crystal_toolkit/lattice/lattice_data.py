@@ -14,13 +14,13 @@ class LatticeData:
     # 单胞基矢
     conv_lattice_matrix: ndarray
 
-    # 变换后基矢
+    # 初基基矢
     pri_lattice_matrix: ndarray
 
-    # 倒易空间基矢
+    # 单胞倒空间基矢
     conv_reciprocal_matrix: ndarray
 
-    # 布里渊区边界
+    # 初基倒空间基矢
     pri_reciprocal_matrix: ndarray
 
     # 高对称点
