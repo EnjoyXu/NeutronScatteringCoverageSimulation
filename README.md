@@ -64,8 +64,8 @@ detector_config = DetectorConfig(
     detector_u=u,
     detector_v=v,
   	detector_w=w,
-    theta_ranges=theta
-    phi_ranges=phi
+    theta_ranges=theta,
+    phi_ranges=phi,
     psi_range= psi,
 )
 
@@ -121,8 +121,8 @@ detector_config = DetectorConfig(
     detector_u=u,
     detector_v=v,
   	detector_w=w,
-    theta_ranges=theta
-    phi_ranges=phi
+    theta_ranges=theta,
+    phi_ranges=phi,
     psi_range= psi,
 )
 
@@ -187,8 +187,8 @@ detector_config = DetectorConfig(
     detector_u=u,
     detector_v=v,
   	detector_w=w,
-    theta_ranges=theta
-    phi_ranges=phi
+    theta_ranges=theta,
+    phi_ranges=phi,
     psi_range= psi,
 )
 
@@ -240,8 +240,8 @@ detector_config = DetectorConfig(
     detector_u=u,
     detector_v=v,
   	detector_w=w,
-    theta_ranges=theta
-    phi_ranges=phi
+    theta_ranges=theta,
+    phi_ranges=phi,
     psi_range= psi,
 )
 
