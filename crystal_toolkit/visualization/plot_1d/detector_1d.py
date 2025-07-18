@@ -118,7 +118,7 @@ class Detector1DPlotter(BasePlotter):
             ),
             # margin=dict(l=0, r=0, b=0, t=40),
             xaxis=dict(
-                range=[-0.2, len(self.k_points_list) + 0.2],
+                range=[-0.2, len(self.k_points_list) - 1 + 0.2],
                 tickvals=self.label_list,
             ),
             yaxis=dict(title=r"$\Delta\text{E(meV)}$"),
