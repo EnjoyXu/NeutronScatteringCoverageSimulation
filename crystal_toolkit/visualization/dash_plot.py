@@ -1,8 +1,6 @@
 import dash
 from dash import dcc, html
 import webbrowser
-import os
-import time
 import signal
 import sys
 

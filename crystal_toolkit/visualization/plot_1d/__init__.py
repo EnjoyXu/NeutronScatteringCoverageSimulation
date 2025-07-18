@@ -1,0 +1,1 @@
+from crystal_toolkit.visualization.plot_1d.detector_1d import Detector1DPlotter
