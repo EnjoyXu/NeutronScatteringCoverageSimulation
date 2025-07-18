@@ -79,6 +79,8 @@ KSpace3D(lattice, detector).plot(
 
 ```
 
+示例 Example
+<div align=center><img src="assets/example_3d_k_space.jpg" /></div>
 
 
 ##### 二维K空间 2D K space
@@ -134,6 +136,10 @@ KSpace2D(lattice, norm, plane_point, thick, new_ex, detector).plot(
 
 
 ```
+
+
+示例 Example
+<div align=center><img src="assets/example_2d_k_space.jpg" /></div>
 
 
 
@@ -197,6 +203,11 @@ Detector1DPlotter(
 ).plot().show()
 
 ```
+
+
+示例 Example
+<div align=center><img src="assets/example_1d_k_space.jpg" /></div>
+
 
 ##### 白光align模拟(测试中) White beam alginment (testing)
 这个函数稍微复杂一些，是用dash写的，所以需要打开浏览器输入对应的本地服务器地址。关闭时也需要手动关闭dash服务器。
