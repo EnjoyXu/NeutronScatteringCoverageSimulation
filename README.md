@@ -10,6 +10,9 @@ A simulation program for neutron TOF spectrometers, which is currently under dev
 
 ### 安装 Installation 
 
+已测试过的python版本：3.12
+Tested python version: 3.12
+
 下载解压后，将终端路径调整到解压后到文件夹内，输入
 ```
 pip install .
