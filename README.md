@@ -1,5 +1,8 @@
 # NeutronScatteringCoverageSimulation
 
+[![DOI](https://zenodo.org/badge/938055952.svg)](https://doi.org/10.5281/zenodo.16899301)
+
+
 中子散射TOF谱仪的模拟程序。目前还在开发中。
 
 A simulation program for neutron TOF spectrometers, which is currently under development.
