@@ -65,6 +65,7 @@ class Detector1DPlotter(BasePlotter):
 
         dE_all = repeat(self._detector.dE, len(self._detector.detector_points_list[0]))
 
+        # 线段数
         N = len(self.k_points_list) - 1
 
         self.__distance_list = array(
@@ -86,9 +87,11 @@ class Detector1DPlotter(BasePlotter):
             paint_points_list.append(
                 column_stack((x * distance * N / self.__distances_tot, y))
             )
-        # 绘图起点
+        # 绘图起点为上一个线段的长度
         for i in range(1, N):
-            paint_points_list[i][:, 0] += paint_points_list[i - 1][-1, 0]
+            paint_points_list[i][:, 0] += (
+                self.__distance_list[i - 1] * N / self.__distances_tot
+            )
 
         return paint_points_list
 
@@ -126,6 +129,8 @@ class Detector1DPlotter(BasePlotter):
 
         self.fig.update_xaxes(
             tickvals=[min(point[:, 0]) for point in self.detector_points_list]
-            + [max(self.detector_points_list[-1][:, 0])],
+            + [
+                len(self.detector_points_list)
+            ],  # 每个标签的起点为每一段的x坐标最小值，最后一个标签的落位为线段数(因为总长为N)
             ticktext=self.label_list,  # 设置刻度值  # 设置刻度文本
         )
