@@ -87,10 +87,10 @@ class Detector1DPlotter(BasePlotter):
             paint_points_list.append(
                 column_stack((x * distance * N / self.__distances_tot, y))
             )
-        # 绘图起点为上一个线段的长度
+        # 绘图起点为前几个线段的长度
         for i in range(1, N):
             paint_points_list[i][:, 0] += (
-                self.__distance_list[i - 1] * N / self.__distances_tot
+                sum(self.__distance_list[:i]) * N / self.__distances_tot
             )
 
         return paint_points_list
