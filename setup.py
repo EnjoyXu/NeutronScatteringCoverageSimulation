@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="crystal_toolkit",
-    version="0.0.3",
+    version="0.0.4",
     packages=find_packages(),
     python_requires=">=3.12",
     install_requires=[
