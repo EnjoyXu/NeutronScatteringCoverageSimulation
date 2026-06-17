@@ -14,23 +14,35 @@ class Detector3DPlotter(BasePlotter):
     def plot(self) -> go.Figure:
         """绘制探测器空间覆盖区域"""
 
-        self.add_traces(
-            [
+        traces = []
+        for i, (points, psi_values) in enumerate(self.detector.detector_points_list):
+            traces.append(
                 go.Scatter3d(
-                    z=detector_data[:, 2],
-                    x=detector_data[:, 0],
-                    y=detector_data[:, 1],
+                    z=points[:, 2],
+                    x=points[:, 0],
+                    y=points[:, 1],
                     opacity=0.1,
                     mode="markers",
                     marker=dict(
                         size=self.config.sizes["detector"],
-                        color=self.config.colors["detector"],
+                        color=-psi_values,
+                        colorscale=[
+                            [0, "rgb(175, 212, 247)"],
+                            [0.5, "rgb(120, 185, 235)"],
+                            [1, "rgb(50, 150, 220)"],
+                        ],
+                        showscale=(i == 0),
+                        colorbar=dict(
+                            title="Psi (°)",
+                            x=0,
+                            xanchor="right",
+                        ),
                     ),
                     name="detectors",
                 )
-                for detector_data in self.detector.detector_points_list
-            ]
-        )
+            )
+
+        self.add_traces(traces)
 
         return self.fig
 
