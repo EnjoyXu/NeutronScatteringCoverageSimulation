@@ -66,6 +66,14 @@ class LETConfig(DetectorConfig):
 
 
 @dataclass
+class MERLINConfig(DetectorConfig):
+    phi_ranges: List[Tuple[float, float]] = field(default_factory=lambda: [[-45, 135]])
+    theta_ranges_direct: List[Tuple[float, float]] = field(
+        default_factory=lambda: [[-30, 30]]
+    )
+
+
+@dataclass
 class FourSEASONSConfig(DetectorConfig):
 
     phi_ranges: List[Tuple[float, float]] = field(default_factory=lambda: [[-35, 130]])

@@ -46,7 +46,7 @@ class Detector(object):
     @property
     def detector_points_list(self):
         if self._detector_points_list is None:
-            return [
+            self._detector_points_list = [
                 get_detector_coordinates(
                     incident_energy=self.config.incident_energy,
                     energy_loss=energy_loss,
@@ -61,7 +61,8 @@ class Detector(object):
                 )
                 for energy_loss in self.dE
             ]
-
+        return self._detector_points_list
+    
     def get_available_points_coordinates_white_beam(
         self, points: np.ndarray, k_min: float, k_max: float, u=None, v=None
     ):
@@ -158,20 +159,8 @@ def get_detector_coordinates(
     theta_ranges: List[Tuple[float, float]],
     psi_range: Tuple[float, float],
     angle_step: float = 2.0,
-) -> np.ndarray:
-    """
-    行向量版探测器坐标计算
-
-    参数：
-        incident_energy: 入射能量 (meV)
-        energy_loss: 能量损失 (meV)
-        detector_u: 探测器u轴方向行向量 (1,3)
-        detector_v: 探测器v轴方向行向量 (1,3)
-        ...其他参数同前...
-
-    返回：
-        Nx3 的探测器坐标数组（每行为一个点）
-    """
+) -> Tuple[np.ndarray, np.ndarray]:
+    """行向量版探测器坐标计算——返回 (点坐标, psi角度值)"""
     # 输入验证
     _validate_angle_ranges(phi_ranges, theta_ranges)
 
@@ -197,9 +186,12 @@ def get_detector_coordinates(
     )  # 行向量运算
 
     # 绕法线轴旋转
+    rotated_points, psi_values = _apply_psi_rotation(
+        detector_points, basis_matrix[2], psi_range, angle_step
+    )
     return (
-        _apply_psi_rotation(detector_points, basis_matrix[2], psi_range, angle_step)
-        * -1  # 因为之前算的是Kf-Ki,但样品系统的信息应该是Q=Ki-Kf
+        rotated_points * -1,  # 因为之前算的是Kf-Ki,但样品系统的信息应该是Q=Ki-Kf
+        psi_values,
     )
 
 
@@ -260,12 +252,18 @@ def _apply_psi_rotation(
     rotation_axis: np.ndarray,
     psi_range: Tuple[float, float],
     step_deg: float,
-) -> np.ndarray:
-    """应用绕轴旋转（行向量版）"""
-    psi_angles = np.deg2rad(np.arange(psi_range[0], psi_range[1], step_deg))
+) -> Tuple[np.ndarray, np.ndarray]:
+    """应用绕轴旋转（行向量版），返回旋转后的点及其对应的psi角度（度）"""
+    psi_angles_deg = np.arange(psi_range[0], psi_range[1], step_deg)
+    psi_angles = np.deg2rad(psi_angles_deg)
     rotation_mats = [rotation_matrix(rotation_axis, angle) for angle in psi_angles]
 
     # 批量旋转并拼接结果
-    return np.vstack(
+    all_points = np.vstack(
         [coordinate_transform(points, R, is_positive=True) for R in rotation_mats]
     )
+
+    # 每个psi角度对应 points.shape[0] 个点
+    psi_values = np.repeat(psi_angles_deg, points.shape[0])
+
+    return all_points, psi_values
