@@ -95,7 +95,13 @@ KSpace3D(lattice, detector).plot(
 ```
 
 示例 Example
-<div align=center><img src="assets/example_3d_k_space.jpg" /></div>
+<div align="center">
+  <a href="assets/example_3d_k_space.html">
+    <img src="assets/example_3d_k_space.jpg" alt="3D K-space" style="max-width:100%;">
+  </a>
+  <br>
+  <a href="assets/example_3d_k_space.html">👉 点击查看交互式三维图 / Click to view interactive 3D plot</a>
+</div>
 
 
 ##### 二维K空间 2D K space
@@ -147,7 +153,13 @@ KSpace2D(lattice, norm, plane_point, thick, new_ex, detector).plot(
 ```
 
 示例 Example
-<div align=center><img src="assets/example_2d_k_space.jpg" /></div>
+<div align="center">
+  <a href="assets/example_2d_k_space.html">
+    <img src="assets/example_2d_k_space.jpg" alt="2D K-space" style="max-width:100%;">
+  </a>
+  <br>
+  <a href="assets/example_2d_k_space.html">👉 点击查看交互式二维图 / Click to view interactive 2D plot</a>
+</div>
 
 
 ##### 一维Q-E覆盖图 1D Q-E coverage
@@ -207,7 +219,12 @@ Detector1DPlotter(
 ```
 
 示例 Example
-<div align=center><img src="assets/example_1d_k_space.jpg" /></div>
+<div align="center">
+  <a href="assets/example_1d_k_space.html">
+    <img src="assets/example_1d_k_space.jpg" alt="1D Q-E" style="max-width:100%;">
+  </a>
+  <br>
+</div>
 
 ---
 
